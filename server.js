@@ -37,7 +37,7 @@ app.use(express.static('public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(session({
-    secret: 'yourSecretKey',
+    secret: process.env.SESSION_SECRET || 'yourSecretKey',
     resave: false,
     saveUninitialized: true
 }));
@@ -127,5 +127,5 @@ app.get('/register', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'register.html'));
 });
 
-// Start server
-app.listen(3000, () => console.log("Server running at http://localhost:3000"));
+// Start server with env PORT
+app.listen(process.env.PORT || 3000, () => console.log(`Server running at http://localhost:${process.env.PORT || 3000}`));
