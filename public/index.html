@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Fresher Hiring Form</title>
+  <link rel="stylesheet" href="/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+  <h2>Fresher Hiring Form</h2>
+
+  <form id="hiringForm">
+    <label for="name">Full Name:</label>
+    <input type="text" id="name" name="name" required>
+
+    <label for="email">Email Address:</label>
+    <input type="email" id="email" name="email" required>
+
+    <label for="phone">Phone Number:</label>
+    <input type="text" id="phone" name="phone" required>
+
+    <label for="qualification">Qualification:</label>
+    <input type="text" id="qualification" name="qualification" placeholder="e.g. BE, BCA, MTech" required>
+
+    <label for="skills">Key Skills:</label>
+    <div class="skills-dropdown" id="skillsDropdown">
+        <input type="text" id="skillsInput" placeholder="Select skills" readonly />
+        <div class="skills-options">
+            <label><input type="checkbox" name="skills[]" value="C"> C</label>
+            <label><input type="checkbox" name="skills[]" value="C++"> C++</label>
+            <label><input type="checkbox" name="skills[]" value="Java"> Java</label>
+            <label><input type="checkbox" name="skills[]" value="Python"> Python</label>
+            <label><input type="checkbox" name="skills[]" value="HTML"> HTML</label>
+            <label><input type="checkbox" name="skills[]" value="CSS"> CSS</label>
+            <label><input type="checkbox" name="skills[]" value="JavaScript"> JavaScript</label>
+            <label><input type="checkbox" name="skills[]" value="AJS"> AJS</label>
+            <label><input type="checkbox" name="skills[]" value="DataAnalyst"> Data Analyst</label>
+        </div>
+    </div>
+
+    <button type="submit">Submit Application</button>
+    <button type="button" class="logout-btn" id="logoutBtn">Logout</button>
+  </form>
+
+  <div id="responseMessage"></div>
+</div>
+
+<script>
+$(document).ready(function () {
+    // Toggle dropdown
+    $("#skillsInput").click(function () {
+        $("#skillsDropdown").toggleClass("active");
+    });
+
+    // Display selected skills in input
+    $("input[type='checkbox']").change(function () {
+        const selectedSkills = $("input[name='skills[]']:checked").map(function () {
+            return $(this).val();
+        }).get();
+        $("#skillsInput").val(selectedSkills.join(", "));
+    });
+
+    // Submit form
+    $("#hiringForm").submit(function (event) {
+        event.preventDefault();
+
+        const formData = $(this).serialize(); // includes skills[] checkboxes
+
+        $.ajax({
+            url: "/submit",
+            method: "POST",
+            data: formData,
+            success: function (response) {
+                $("#responseMessage").text(response);
+                $("#hiringForm")[0].reset();
+                $("#skillsInput").val('');
+            },
+            error: function () {
+                $("#responseMessage").text("Something went wrong while submitting.");
+            }
+        });
+    });
+
+    // Logout button
+    $("#logoutBtn").click(function () {
+        window.location.href = "login.html";
+    });
+
+    // Hide dropdown when clicking outside
+    $(document).click(function (e) {
+        if (!$(e.target).closest("#skillsDropdown").length) {
+            $("#skillsDropdown").removeClass("active");
+        }
+    });
+});
+</script>
+
+</body>
+</html>
